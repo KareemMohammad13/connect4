@@ -63,7 +63,36 @@ def minimax(board, depth, alpha, beta, maximizing_player):
         return min_eval
 
 
+# Find the best move for the AI player
+def find_best_move(board):
+    max_eval = float('-inf')
+    best_move = None
+    valid_columns = [col for col in range(COLUMN_COUNT) if is_valid_column(board, col)]
+    for col in valid_columns:
+        temp_board = board.copy()
+        drop_disc(temp_board, col, AI)
+        eval = minimax(temp_board, 4, float('-inf'), float('inf'), False)
+        if eval > max_eval:
+            max_eval = eval
+            best_move = col
+    return best_move
 
+# Update the game board based on the player's move
+def make_player_move(col):
+    if is_valid_column(board, col):
+        drop_disc(board, col, PLAYER)
+        render_board()
+        if not is_game_over(board):
+            make_ai_move()
+
+# Update the game board based on the AI's move
+def make_ai_move():
+    col = find_best_move(board)
+    if col is not None:
+        drop_disc(board, col, AI)
+        render_board()
+        
+        
 # Render the game board in the GUI
 def render_board():
     for widget in game_frame.winfo_children():
