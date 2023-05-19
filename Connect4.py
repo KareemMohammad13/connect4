@@ -32,6 +32,36 @@ def is_game_over(board):
 def is_board_full(board):
     return np.all(board != EMPTY)
 
+# Minimax algorithm with Alpha-Beta pruning
+def minimax(board, depth, alpha, beta, maximizing_player):
+    if depth == 0 or is_game_over(board):
+        return evaluate_board(board)
+
+    if maximizing_player:
+        max_eval = float('-inf')
+        valid_columns = [col for col in range(COLUMN_COUNT) if is_valid_column(board, col)]
+        for col in valid_columns:
+            temp_board = board.copy()
+            drop_disc(temp_board, col, AI)
+            eval = minimax(temp_board, depth - 1, alpha, beta, False)
+            max_eval = max(max_eval, eval)
+            alpha = max(alpha, eval)
+            if alpha >= beta:
+                break
+        return max_eval
+    else:
+        min_eval = float('inf')
+        valid_columns = [col for col in range(COLUMN_COUNT) if is_valid_column(board, col)]
+        for col in valid_columns:
+            temp_board = board.copy()
+            drop_disc(temp_board, col, PLAYER)
+            eval = minimax(temp_board, depth - 1, alpha, beta, True)
+            min_eval = min(min_eval, eval)
+            beta = min(beta, eval)
+            if alpha >= beta:
+                break
+        return min_eval
+
 
 
 # Render the game board in the GUI
@@ -56,3 +86,4 @@ game_frame.pack()
 render_board()
 
 root.mainloop()
+ 
