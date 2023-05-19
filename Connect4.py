@@ -32,6 +32,41 @@ def is_game_over(board):
 def is_board_full(board):
     return np.all(board != EMPTY)
 
+# Check if a player has won
+def is_winner(board, player):
+    # Check horizontally
+    for row in range(ROW_COUNT):
+        for col in range(COLUMN_COUNT - WINDOW_LENGTH + 1):
+            if np.all(board[row, col:col+WINDOW_LENGTH] == player):
+                return True
+
+    # Check vertically
+    for col in range(COLUMN_COUNT):
+        for row in range(ROW_COUNT - WINDOW_LENGTH + 1):
+            if np.all(board[row:row+WINDOW_LENGTH, col] == player):
+                return True
+
+    # Check diagonally (ascending)
+    for row in range(ROW_COUNT - WINDOW_LENGTH + 1):
+        for col in range(COLUMN_COUNT - WINDOW_LENGTH + 1):
+            if np.all(board[row:row+WINDOW_LENGTH, col:col+WINDOW_LENGTH].diagonal() == player):
+                return True
+
+    # Check diagonally (descending)
+    for row in range(ROW_COUNT - WINDOW_LENGTH + 1):
+        for col in range(COLUMN_COUNT - WINDOW_LENGTH + 1):
+            if np.all(np.flipud(board[row:row+WINDOW_LENGTH, col:col+WINDOW_LENGTH]).diagonal() == player):
+                return True
+
+    return False
+# Evaluate the current state of the board
+def evaluate_board(board):
+    if is_winner(board, AI):
+        return 1
+    elif is_winner(board, PLAYER):
+        return -1
+    else:
+        return 0
 # Minimax algorithm with Alpha-Beta pruning
 def minimax(board, depth, alpha, beta, maximizing_player):
     if depth == 0 or is_game_over(board):
