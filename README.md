@@ -1,1 +1,1 @@
-# connect4 game using python
+# Connect4 game using AI
